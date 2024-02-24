@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -74,10 +74,21 @@ WSGI_APPLICATION = 'sample.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'test',     
+        'USER': os.environ.get("V_DB_USER"),
+        'PASSWORD': os.environ.get("V_DB_PASSWORD"), 
+        'HOST': os.environ.get("V_DB_HOST"),   
+        'COLLATION': 'utf8_general_ci',
+        'CHARSET': 'utf8',
+        'PORT': os.environ.get("V_DB_PORT"),
+
+        'TEST':{
+            'NAME': 'testing',            
+        },
+        
+    },
 }
 
 
@@ -122,8 +133,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = os.environ.get('REDIS_URL')
+CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
 
 # ... existing code ...
 
@@ -131,7 +142,7 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://localhost:6379/1',
+        'LOCATION': os.environ.get('REDIS_URL'),
     },
 }
 
